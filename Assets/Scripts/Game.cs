@@ -11,7 +11,7 @@ public class Game : GameBase
         {
             Debug.Log("Other player lowest card is " + player.getLowestCard().cardName);
 
-            if (player.getLowestCard().getCardValue() < firstPlayer.getLowestCard().getCardValue())
+            if (player.getLowestCard().cardValue < firstPlayer.getLowestCard().cardValue)
             {
                 firstPlayer = player;
             }
@@ -69,8 +69,8 @@ public class Game : GameBase
 
     private bool Validate1CardPlay(List<Card> pCardsToPlay)
     {
-        int cardOnTableValue = Game.Instance.Table.cardsInTable.Count < 1 ? 0 : Game.Instance.Table.cardsInTable[0].getCardValue();
-        int cardOnHandValue = pCardsToPlay[0].getCardValue();
+        int cardOnTableValue = Game.Instance.Table.cardsInTable.Count < 1 ? 0 : Game.Instance.Table.cardsInTable[0].cardValue;
+        int cardOnHandValue = pCardsToPlay[0].cardValue;
 
         return cardOnHandValue > cardOnTableValue;
     }

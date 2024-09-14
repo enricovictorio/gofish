@@ -31,7 +31,7 @@ public class CardHolder : MonoBehaviour
         Card lowestCard = cardsOnHand[0];
         foreach (Card card in cardsOnHand)
         {
-            if (card != lowestCard && card.getCardValue() < lowestCard.getCardValue())
+            if (card != lowestCard && card.cardValue < lowestCard.cardValue)
             {
                 lowestCard = card;
             }
@@ -45,7 +45,7 @@ public class CardHolder : MonoBehaviour
         Card highestCard = cardsOnHand[0];
         foreach (Card card in cardsOnHand)
         {
-            if (card != highestCard && card.getCardValue() > highestCard.getCardValue())
+            if (card != highestCard && card.cardValue > highestCard.cardValue)
             {
                 highestCard = card;
             }

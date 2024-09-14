@@ -33,22 +33,22 @@ public class Card : MonoBehaviour
 
 
     public string cardName {  get; private set; }
+    public int cardValue
+    {
+        get
+        {
+            int cardNumValue1 = cardPointMultiplier[CARDRANK[cardSuitIndex]];
+            int cardNumValue2 = cardPoints[CARDSUITS[cardRankIndex]];
+
+            return cardNumValue1 + cardNumValue2;
+        }
+    }
     public int cardSuitIndex { get; private set; }
     public int cardRankIndex { get; private set; }
 
     private SpriteRenderer mSpriteRenderer;
 
     private bool mIsSelected = false;
-
-    public int getCardValue()
-    {
-        string[] cardNameParts = cardName.Split("_of_");
-
-        int cardNumValue1 = cardPointMultiplier[cardNameParts[0].Replace("_of_", "")];
-        int cardNumValue2 = cardPoints[cardNameParts[1].Replace("_of_", "")];
-
-        return cardNumValue1 + cardNumValue2;
-    }
 
     public bool setCardFace(string pCardName, bool pSetNameOnly = false)
     {
