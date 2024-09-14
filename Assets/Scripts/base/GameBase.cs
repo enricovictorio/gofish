@@ -31,13 +31,19 @@ public abstract class GameBase : MonoBehaviour
         {
             bool isValidPlayer = false;
 
-            if (value == ThisPlayer) isValidPlayer = true;
-            for (int i = 0; i < OtherPlayers.Count; i++)
+            if (value == ThisPlayer)
             {
-                if (value.Equals(OtherPlayers[i]))
+                isValidPlayer = true;
+            }
+            else
+            {
+                for (int i = 0; i < OtherPlayers.Count; i++)
                 {
-                    isValidPlayer = true;
-                    break;
+                    if (value.Equals(OtherPlayers[i]))
+                    {
+                        isValidPlayer = true;
+                        break;
+                    }
                 }
             }
 
@@ -68,7 +74,6 @@ public abstract class GameBase : MonoBehaviour
 
     public abstract void OnPlayerWin(CardHolder pPlayer);
 
-
     public void PlayNextTurn()
     {
         if (mActivePlayer.remainingCardsOnHand() == 0)
@@ -92,7 +97,6 @@ public abstract class GameBase : MonoBehaviour
             }
             mActivePlayer.enabled = true;
         }
-
     }
 
     void Start()
