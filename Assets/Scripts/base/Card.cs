@@ -33,6 +33,8 @@ public class Card : MonoBehaviour
 
 
     public string cardName {  get; private set; }
+    public int cardSuitIndex { get; private set; }
+    public int cardRankIndex { get; private set; }
 
     private SpriteRenderer mSpriteRenderer;
 
@@ -50,17 +52,47 @@ public class Card : MonoBehaviour
 
     public bool setCardFace(string pCardName, bool pSetNameOnly = false)
     {
-        cardName = pCardName;
+        string[] nameParts = pCardName.Split("_of_");
+        string cardRank = nameParts[0].Replace("_of_", "");
+        string cardSuit = nameParts[1].Replace("_of_", "");
+
+        int cardRankIndex = -1;
+        for (int i = 0; i < CARDNUM.Length; i++)
+        {
+            if (CARDNUM[i] == cardRank)
+            {
+                cardRankIndex = i;
+                break;
+            }
+        }
+        int cardSuitIndex = -1;
+        for (int i = 0; i < CARDSUITS.Length; i++)
+        {
+            if (CARDSUITS[i] == cardSuit)
+            {
+                cardSuitIndex = i;
+                break;
+            }
+        }
+
+        return setCardFace(cardRankIndex, cardSuitIndex, pSetNameOnly);
+    }
+
+    public bool setCardFace(int pRankIndex, int pSuitIndex, bool pSetNameOnly = false)
+    {
+        cardSuitIndex = pSuitIndex;
+        cardRankIndex = pRankIndex;
+        cardName = CARDNUM[pRankIndex] + "_of_" + CARDSUITS[pSuitIndex];
 
         if (pSetNameOnly)
         {
             return true;
         }
 
-        if (ResourceManager.Instance.isSpriteAvailable(pCardName))
+        if (ResourceManager.Instance.isSpriteAvailable(cardName))
         {
-            mSpriteRenderer.sprite = ResourceManager.Instance.getSprite(pCardName);
-            transform.parent.name = pCardName;
+            mSpriteRenderer.sprite = ResourceManager.Instance.getSprite(cardName);
+            transform.parent.name = cardName;
 
             return true;
         }
