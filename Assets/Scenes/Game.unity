@@ -625,6 +625,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6427e9c9507e7914dbb9abdfaf52c308, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardsInTable: []
   m1CardArrangement: {fileID: 2057364488}
   m2CardArrangement: {fileID: 888584905}
   m3CardArrangement: {fileID: 1100983571}
@@ -2641,7 +2642,7 @@ GameObject:
   - component: {fileID: 894814387}
   - component: {fileID: 894814388}
   m_Layer: 0
-  m_Name: cards (3)
+  m_Name: AI_1_Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5023,7 +5024,7 @@ GameObject:
   - component: {fileID: 1881095878}
   - component: {fileID: 1881095879}
   m_Layer: 0
-  m_Name: cards (2)
+  m_Name: playerHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
