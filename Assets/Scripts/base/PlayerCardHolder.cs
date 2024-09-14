@@ -38,7 +38,10 @@ public class PlayerCardHolder : CardHolder
         mPlayButton.SetActive(false);
         mPlayerHasInitialized = true;
     }
-    public override bool hasInitialized() { return mPlayerHasInitialized; }
+    public override bool hasInitialized() 
+    { 
+        return mPlayerHasInitialized; 
+    }
 
     public void OnPlayBtnClick()
     {
