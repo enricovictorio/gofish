@@ -91,7 +91,10 @@ public class AICardHolder : CardHolder
         for (int i = 0; i < numCardsToSelect; i++)
         {
             Card selectedCard = cardsOnHand[UnityEngine.Random.Range(0, cardsOnHand.Count)];
-            mSelectedCards.Add(selectedCard);
+            if (!mSelectedCards.Contains(selectedCard))
+            {
+                mSelectedCards.Add(selectedCard);
+            }
         }
     }
 }
