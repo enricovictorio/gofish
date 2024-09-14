@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Card : MonoBehaviour
 {
-    public static string[] CARDRANK = { "2", "3", "4", "5", "6", "7", "8", "9", "jack", "queen", "king", "ace" };
+    public static string[] CARDRANK = { "3", "4", "5", "6", "7", "8", "9", "jack", "queen", "king", "ace", "2" };
     public static string[] CARDSUITS = { "clubs", "spades", "hearts", "diamonds" };
 
     public static Dictionary<string, int> cardPoints = new Dictionary<string, int>()
