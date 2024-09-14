@@ -50,6 +50,8 @@ public abstract class GameBase : MonoBehaviour
             Debug.Assert(isValidPlayer);
 
             mActivePlayer = value;
+
+            mOtherHandsIdx = -1;
             for (int i = 0; i < OtherPlayers.Count; i++)
             {
                 if (value.Equals(OtherPlayers[i]))
