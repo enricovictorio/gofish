@@ -69,7 +69,7 @@ public class Game : GameBase
 
     private bool Validate1CardPlay(List<Card> pCardsToPlay)
     {
-        int cardOnTableValue = Game.Instance.Table.cardsInTable.Count < 1 ? 0 : Game.Instance.Table.cardsInTable[0].cardValue;
+        int cardOnTableValue = Game.Instance.Table.cardsInTable.Count < 1 ? -1 : Game.Instance.Table.cardsInTable[0].cardValue;
         int cardOnHandValue = pCardsToPlay[0].cardValue;
 
         return cardOnHandValue > cardOnTableValue;
