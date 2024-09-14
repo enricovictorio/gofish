@@ -37,8 +37,8 @@ public class Card : MonoBehaviour
     {
         get
         {
-            int cardNumValue1 = cardPointMultiplier[CARDRANK[cardSuitIndex]];
-            int cardNumValue2 = cardPoints[CARDSUITS[cardRankIndex]];
+            int cardNumValue1 = cardPointMultiplier[CARDRANK[cardRankIndex]];
+            int cardNumValue2 = cardPoints[CARDSUITS[cardSuitIndex]];
 
             return cardNumValue1 + cardNumValue2;
         }
