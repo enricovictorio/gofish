@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Card : MonoBehaviour
 {
-    public static string[] CARDNUM = { "2", "3", "4", "5", "6", "7", "8", "9", "jack", "queen", "king", "ace" };
+    public static string[] CARDRANK = { "2", "3", "4", "5", "6", "7", "8", "9", "jack", "queen", "king", "ace" };
     public static string[] CARDSUITS = { "clubs", "spades", "hearts", "diamonds" };
 
     public static Dictionary<string, int> cardPoints = new Dictionary<string, int>()
@@ -57,9 +57,9 @@ public class Card : MonoBehaviour
         string cardSuit = nameParts[1].Replace("_of_", "");
 
         int cardRankIndex = -1;
-        for (int i = 0; i < CARDNUM.Length; i++)
+        for (int i = 0; i < CARDRANK.Length; i++)
         {
-            if (CARDNUM[i] == cardRank)
+            if (CARDRANK[i] == cardRank)
             {
                 cardRankIndex = i;
                 break;
@@ -82,7 +82,7 @@ public class Card : MonoBehaviour
     {
         cardSuitIndex = pSuitIndex;
         cardRankIndex = pRankIndex;
-        cardName = CARDNUM[pRankIndex] + "_of_" + CARDSUITS[pSuitIndex];
+        cardName = CARDRANK[pRankIndex] + "_of_" + CARDSUITS[pSuitIndex];
 
         if (pSetNameOnly)
         {

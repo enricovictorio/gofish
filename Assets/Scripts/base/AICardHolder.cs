@@ -19,13 +19,12 @@ public class AICardHolder : CardHolder
         int i = 0;
         while (i < numCardsInHand)
         {
-            string thisCardNum = Card.CARDNUM[UnityEngine.Random.Range(0, Card.CARDNUM.Length)];
+            string thisCardRank = Card.CARDRANK[UnityEngine.Random.Range(0, Card.CARDRANK.Length)];
             string thisCardSuit = Card.CARDSUITS[UnityEngine.Random.Range(0, Card.CARDSUITS.Length)];
-            string cardName = thisCardNum + "_of_" + thisCardSuit;
+            string cardName = thisCardRank + "_of_" + thisCardSuit;
 
-            if (!GameBase.Instance.cardsInPlay.Contains(cardName))
+            if (!GameBase.Instance.cardsInPlay.Contains(cardName) && cardsOnHand[i].setCardFace(cardName, true))
             {
-                cardsOnHand[i].setCardFace(cardName, true);
                 GameBase.Instance.cardsInPlay.Add(cardName);
 
                 i++;
