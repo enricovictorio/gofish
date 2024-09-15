@@ -97,11 +97,6 @@ public class PlayerCardHolder : CardHolder
 
     bool selectCard()
     {
-        if (mSelectedCards.Count > 4)
-        {
-            return false;
-        }
-
         Vector2 touchPos = Vector2.zero;
 
 #if UNITY_EDITOR
@@ -139,10 +134,14 @@ public class PlayerCardHolder : CardHolder
                     selectedCard.select(false);
                     mSelectedCards.Remove(selectedCard);
                 }
-                else
+                else if (mSelectedCards.Count < 5)
                 {
                     selectedCard.select(true);
                     mSelectedCards.Add(selectedCard);
+                }
+                else
+                {
+                    Debug.Log("Unable to select card.");
                 }
             }
         }
