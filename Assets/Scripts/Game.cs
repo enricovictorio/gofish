@@ -1,11 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Game : GameBase
 {
+    [SerializeField]
+    GameObject mShowDialog;
+
+    [SerializeField]
+    TextMeshProUGUI mResultText;
+
     bool mIsFirstTurn = true;
     Card mLowestCardInPlay = null;
+
+    public void ReloadGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
 
     public override void OnGameInit()
     {
@@ -65,16 +78,19 @@ public class Game : GameBase
 
     public override void OnPlayerWin(CardHolder pPlayer)
     {
+        mShowDialog.SetActive(true);
+        mResultText.gameObject.SetActive(true);
+
         if (pPlayer == Game.Instance.ThisPlayer)
         {
-            Debug.Log("You Win!");
+            mResultText.text = "You Win!";
         }
         else
         {
-            Debug.Log("You Lose!");
+            mResultText.text = "You Lose!";
         }
 
-        Debug.Assert(false);
+        this.gameObject.SetActive(false);
     }
 
     private bool Validate1CardPlay(List<Card> pCardsToPlay)
