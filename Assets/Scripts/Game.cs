@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Game : GameBase
 {
+    bool mIsFirstTurn = true;
+    Card mLowestCardInPlay = null;
+
     public override void OnGameInit()
     {
         CardHolder firstPlayer = Game.Instance.ThisPlayer;
@@ -17,6 +20,7 @@ public class Game : GameBase
             }
         }
 
+        mLowestCardInPlay = firstPlayer.getLowestCard();
         Game.Instance.ActivePlayer = firstPlayer;
         Game.Instance.ActivePlayer.enabled = true;
     }
@@ -36,6 +40,11 @@ public class Game : GameBase
             return false;
         }
 
+        if (mIsFirstTurn && !pCardsToPlay.Contains(mLowestCardInPlay))
+        {
+            return false;
+        }
+
         if (Game.Instance.Table.cardsInTable.Count != 0 && pCardsToPlay.Count != Game.Instance.Table.cardsInTable.Count)
         {
             return false;
@@ -47,6 +56,7 @@ public class Game : GameBase
             || (pCardsToPlay.Count == 5 && Validate5CardPlay(pCardsToPlay))
             )
         {
+            mIsFirstTurn = false;
             return true;
         }
 
