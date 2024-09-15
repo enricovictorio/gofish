@@ -216,10 +216,12 @@ public class Game : GameBase
         int lastRank = pCardsToPlay[0].cardRankIndex;
         for (int i = 1; i < pCardsToPlay.Count; i++)
         {
-            if (pCardsToPlay[i].cardRankIndex != (lastRank - 1))
+            if (pCardsToPlay[i].cardRankIndex != (lastRank + 1))
             {
                 return false;
             }
+
+            lastRank = pCardsToPlay[i].cardRankIndex;
         }
 
         int cardSuit = pCardsToPlay[0].cardSuitIndex;
