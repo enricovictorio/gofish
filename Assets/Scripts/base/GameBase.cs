@@ -88,6 +88,11 @@ public abstract class GameBase : MonoBehaviour
             OnPlayerWin(mActivePlayer);
             mGameState = GameState.End;
         }
+        else if (Pond.remainingCardsOnHand() < 1)
+        {
+            OnPlayerWin(null);
+            mGameState = GameState.End;
+        }
         else
         {
             mActivePlayer.onEndTurn();
@@ -105,6 +110,22 @@ public abstract class GameBase : MonoBehaviour
                 mActivePlayer = OtherPlayers[mOtherHandsIdx];
             }
             mActivePlayer.enabled = true;
+        }
+    }
+
+    public IEnumerator ForceEndGame()
+    {
+        yield return new WaitForSeconds(1.0f);
+
+        if (mActivePlayer.remainingCardsOnHand() == 0)
+        {
+            OnPlayerWin(mActivePlayer);
+            mGameState = GameState.End;
+        }
+        else
+        {
+            OnPlayerWin(null);
+            mGameState = GameState.End;
         }
     }
 

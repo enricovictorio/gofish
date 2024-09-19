@@ -86,7 +86,15 @@ public class AICardHolder : Player
                 else if (mSelectedCards[0].cardRankIndex == mSelectedCards[1].cardRankIndex)
                 {
                     playSelectedCards();
-                    mAIState = 0;
+                    if (cardsOnHand.Count < 1)
+                    {
+                        StartCoroutine(Game.Instance.ForceEndGame());
+                        mAIState = -1;
+                    }
+                    else
+                    {
+                        mAIState = 0;
+                    }
                 }
                 break;
             }

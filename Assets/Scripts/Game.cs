@@ -63,7 +63,11 @@ public class Game : GameBase
         mShowDialog.SetActive(true);
         mResultText.gameObject.SetActive(true);
 
-        if (pPlayer == Game.Instance.ThisPlayer)
+        if (pPlayer == null)
+        {
+            mResultText.text = "It's a Draw!";
+        }
+        else if (pPlayer == Game.Instance.ThisPlayer)
         {
             mResultText.text = "You Win!";
         }

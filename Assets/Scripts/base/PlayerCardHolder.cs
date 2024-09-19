@@ -102,7 +102,15 @@ public class PlayerCardHolder : Player
                 else if (mSelectedCards[0].cardRankIndex == mSelectedCards[1].cardRankIndex)
                 {
                     playSelectedCards();
-                    mPlayerState = 0;
+                    if (cardsOnHand.Count < 1)
+                    {
+                        StartCoroutine(Game.Instance.ForceEndGame());
+                        mPlayerState = -1;
+                    }
+                    else
+                    {
+                        mPlayerState = 0;
+                    }
                 }
                 break;
             }
