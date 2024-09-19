@@ -8,8 +8,9 @@ public class CardHolder : MonoBehaviour
     protected List<Card> cardsOnHand = new List<Card>();
     protected List<Card> mSelectedCards = new List<Card>();
 
-    public async virtual void initializeCards() { await Task.Delay(1); }
+    public virtual IEnumerator initializeCards() { return null; }
     public virtual bool hasInitialized() { return false; }
+    public virtual void onEndTurn() { }
 
     public int remainingCardsOnHand() { return cardsOnHand.Count; }
 
@@ -24,6 +25,52 @@ public class CardHolder : MonoBehaviour
         }
 
         return false;
+    }
+
+    public string hasCardRank(int pRankIdx)
+    {
+        foreach (Card card in cardsOnHand)
+        {
+            if (card.cardRankIndex == pRankIdx)
+            {
+                return card.cardName;
+            }
+        }
+
+        return "";
+    }
+
+    public Card getCard(string pCardName)
+    {
+        int cardIndexToGive = -1;
+        for(int i = 0; i < cardsOnHand.Count; i++)
+        {
+            if (cardsOnHand[i].cardName == pCardName)
+            {
+                cardIndexToGive = i;
+                break;
+            }
+        }
+
+        if (cardIndexToGive == -1)
+        {
+            return null;
+        }
+
+        Card retVal = cardsOnHand[cardIndexToGive];
+        cardsOnHand.Remove(retVal);
+
+        updateHandLayout();
+
+        return retVal;
+    }
+
+    public virtual void receiveCard(Card pCard)
+    {
+        pCard.transform.parent.SetParent(transform, false);
+        cardsOnHand.Add(pCard);
+
+        updateHandLayout();
     }
 
     public Card getLowestCard()
@@ -54,31 +101,37 @@ public class CardHolder : MonoBehaviour
         return highestCard;
     }
 
-    public bool playSelectedCards()
+    public void updateHandLayout()
     {
-        if (mSelectedCards.Count == 0)
+        int CARDSPREADCOUNT = cardsOnHand.Count;
+        float ANGLEPERCARD = 140.0f / (float)cardsOnHand.Count;
+        float FIRSTCARDANGLE = 0 - (ANGLEPERCARD * (CARDSPREADCOUNT / 2.0f)) + (ANGLEPERCARD / 2.0f);
+
+        for (int i = 0; i < cardsOnHand.Count; i++)
         {
-            GameBase.Instance.Table.Clear();
-            return true;
+            Transform transform = cardsOnHand[i].transform.parent;
+
+            transform.localPosition = new Vector3(0, 0, i * 0.1f);
+            transform.localEulerAngles = new Vector3(0, 0, FIRSTCARDANGLE + (ANGLEPERCARD * i));
+            transform.localScale = Vector3.one;
         }
+    }
 
-        List<Card> selectedCards = new List<Card>(mSelectedCards);
+    [ContextMenu("Test")]
+    public void Test()
+    {
+        int CARDSPREADCOUNT = cardsOnHand.Count;
+        float ANGLEPERCARD = 140.0f / (float)cardsOnHand.Count;
+        float FIRSTCARDANGLE = 0 - (ANGLEPERCARD * (CARDSPREADCOUNT / 2.0f)) + (ANGLEPERCARD / 2.0f);
 
-        if (!GameBase.Instance.OnConfirmMove(selectedCards))
+        for (int i = 0; i < cardsOnHand.Count; i++)
         {
-            return false;
+            Transform transform = cardsOnHand[i].transform.parent;
+
+            transform.localPosition = new Vector3(0, 0, i * 0.1f);
+            transform.localEulerAngles = new Vector3(0, 0, FIRSTCARDANGLE + (ANGLEPERCARD * i));
+            transform.localScale = Vector3.one;
         }
-
-        while (mSelectedCards.Count > 0)
-        {
-            cardsOnHand.Remove(mSelectedCards[0]);
-
-            mSelectedCards[0].transform.gameObject.SetActive(false);
-            mSelectedCards.RemoveAt(0);
-        }
-        GameBase.Instance.Table.SetActiveCards(selectedCards);
-
-        return true;
     }
 
     void Start()

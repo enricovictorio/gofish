@@ -4,16 +4,15 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class AICardHolder : CardHolder
+public class AICardHolder : Player
 {
     private int mAIState = -1;
     private bool mPlayerHasInitialized = false;
 
     private float mSimulateThinkingDelay = 0;
 
-    public async override void initializeCards()
+    public override IEnumerator initializeCards()
     {
-
         int numCardsInHand = GetComponentsInChildren<Card>().Length;
 
         int i = 0;
@@ -31,14 +30,28 @@ public class AICardHolder : CardHolder
             }
             else
             {
-                await Task.Delay(1);
+                yield return null;
             }
         }
+
+        updateHandLayout();
 
         mPlayerHasInitialized = true;
     }
 
     public override bool hasInitialized() { return mPlayerHasInitialized; }
+
+    public override void receiveCard(Card pCard)
+    {
+        pCard.clearCardFace();
+        base.receiveCard(pCard);
+    }
+
+    public override void onEndTurn()
+    {
+        mAIState = -1;
+        this.enabled = false;
+    }
 
     void Update()
     {
@@ -53,19 +66,27 @@ public class AICardHolder : CardHolder
             case 1:
             {
                 mSimulateThinkingDelay -= Time.deltaTime;
-                if (mSimulateThinkingDelay < 0)
+                if (mSimulateThinkingDelay > 0)
                 {
-                    do
-                    {
-                        mSelectedCards.Clear();
-                        selectCards();
-                    }
-                    while (!playSelectedCards());
-
-                    mAIState = -1;
-                    this.enabled = false;
-                    Game.Instance.PlayNextTurn();
                     break;
+                }
+
+                mSelectedCards.Clear();
+                selectCards();
+
+                if (mSelectedCards.Count == 1)
+                {
+                    Game.Instance.OnConfirmMove(mSelectedCards);
+                }
+
+                if (mSelectedCards.Count == 1)
+                {
+                    Game.Instance.PlayNextTurn();
+                }
+                else if (mSelectedCards[0].cardRankIndex == mSelectedCards[1].cardRankIndex)
+                {
+                    playSelectedCards();
+                    mAIState = 0;
                 }
                 break;
             }
@@ -79,21 +100,26 @@ public class AICardHolder : CardHolder
 
     void selectCards()
     {
-        if (Game.Instance.Table.cardsInTable.Count > 0)
+        for (int i = 0; i < cardsOnHand.Count; i++)
         {
-            if (UnityEngine.Random.value < 0.1f)
-            {
-                return;
-            }
-        }
+            Card selectedCard1 = cardsOnHand[UnityEngine.Random.Range(0, cardsOnHand.Count)];
 
-        int numCardsToSelect = Math.Min(cardsOnHand.Count, UnityEngine.Random.Range(1, 6));
-        for (int i = 0; i < numCardsToSelect; i++)
-        {
-            Card selectedCard = cardsOnHand[UnityEngine.Random.Range(0, cardsOnHand.Count)];
-            if (!mSelectedCards.Contains(selectedCard))
+            mSelectedCards.Clear();
+            mSelectedCards.Add(selectedCard1);
+
+            for (int j = 0 + 1; j < cardsOnHand.Count; j++)
             {
-                mSelectedCards.Add(selectedCard);
+                Card selectedCard2 = cardsOnHand[j];
+                if (selectedCard2 != selectedCard1 && selectedCard1.cardRankIndex == selectedCard2.cardRankIndex)
+                {
+                    mSelectedCards.Add(selectedCard2);
+                    break;
+                }
+            }
+
+            if (mSelectedCards.Count == 2)
+            {
+                break;
             }
         }
     }

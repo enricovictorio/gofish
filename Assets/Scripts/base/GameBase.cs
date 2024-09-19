@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -21,9 +23,12 @@ public abstract class GameBase : MonoBehaviour
     public CardHolder ThisPlayer;
     public List<CardHolder> OtherPlayers;
     public Table Table;
+    public Pond Pond;
 
     [HideInInspector]
     public List<string> cardsInPlay = new List<string>();
+
+    Task loadTask;
 
     public CardHolder ActivePlayer {  
         get {  return this.mActivePlayer; } 
@@ -85,6 +90,8 @@ public abstract class GameBase : MonoBehaviour
         }
         else
         {
+            mActivePlayer.onEndTurn();
+
             mActivePlayer.enabled = false;
             mOtherHandsIdx++;
 
@@ -114,12 +121,16 @@ public abstract class GameBase : MonoBehaviour
         {
             case GameState.PreInit:
             {
-                PreInitGame();
+                StartCoroutine(PreInitGame());
+                mGameState = GameState.Init;
                 break;
             }
             case GameState.Init:
             {
-                InitGame();
+                if (InitGame())
+                {
+                    mGameState = GameState.Loop;
+                }
                 break;
             }
             case GameState.Loop:
@@ -136,18 +147,32 @@ public abstract class GameBase : MonoBehaviour
 
     }
 
-    void PreInitGame()
+    IEnumerator PreInitGame()
     {
-        ThisPlayer.initializeCards();
-        foreach (CardHolder player in OtherPlayers)
+        StartCoroutine(ThisPlayer.initializeCards());
+        while (!ThisPlayer.hasInitialized())
         {
-            player.initializeCards();
+            yield return null;
         }
 
-        mGameState = GameState.Init;
+        foreach (CardHolder player in OtherPlayers)
+        {
+            StartCoroutine(player.initializeCards());
+            while (!player.hasInitialized())
+            {
+                yield return null;
+            }
+        }
+
+        StartCoroutine(Pond.initializeCards());
+        while (!Pond.hasInitialized())
+        {
+            yield return null;
+        }
+
     }
 
-    void InitGame()
+    bool InitGame()
     {
         bool preInitIsDone = true;
 
@@ -165,11 +190,18 @@ public abstract class GameBase : MonoBehaviour
             }
         }
 
+        if (!Pond.hasInitialized())
+        {
+            preInitIsDone = false;
+        }
+
         if (preInitIsDone)
         {
             OnGameInit();
-            mGameState = GameState.Loop;
+            return true;
         }
+        
+        return false;
     }
 
     void LoopGame()

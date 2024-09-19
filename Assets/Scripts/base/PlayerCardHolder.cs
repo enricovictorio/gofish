@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
-public class PlayerCardHolder : CardHolder
+public class PlayerCardHolder : Player
 {
     [SerializeField]
     private GameObject mPlayButton;
@@ -13,7 +13,7 @@ public class PlayerCardHolder : CardHolder
     private int mPlayerState = -1;
     private bool mPlayerHasInitialized = false;
 
-    public async override void initializeCards()
+    public override IEnumerator initializeCards()
     {
         int numCardsInHand = GetComponentsInChildren<Card>().Length;
 
@@ -31,9 +31,11 @@ public class PlayerCardHolder : CardHolder
             }
             else
             {
-                await Task.Delay(1);
+                yield return null;
             }
         }
+
+        updateHandLayout();
 
         mPlayButton.SetActive(false);
         mPlayerHasInitialized = true;
@@ -43,8 +45,22 @@ public class PlayerCardHolder : CardHolder
         return mPlayerHasInitialized; 
     }
 
+    public override void onEndTurn()
+    {
+        mPlayButton.SetActive(false);
+
+        mPlayerState = -1;
+        this.enabled = false;
+    }
+
     public void OnPlayBtnClick()
     {
+        if (mSelectedCards.Count == 0)
+        {
+            Debug.Log("Must select a card first!");
+            return;
+        }
+
         mPlayerState = 1;
     }
 
@@ -55,33 +71,37 @@ public class PlayerCardHolder : CardHolder
             case 0:
             {
                 mPlayButton.SetActive(true);
-                if (mPlayButton.gameObject.activeSelf && mSelectedCards.Count < 1)
+                if (mSelectedCards.Count < 2)
                 {
-                    mPlayButton.GetComponentInChildren<TextMeshProUGUI>().text = "Pass!";
+                    mPlayButton.GetComponentInChildren<TextMeshProUGUI>().text = "Ask!";
                 }
-                else
+                else if (mSelectedCards.Count < 3)
                 {
                     mPlayButton.GetComponentInChildren<TextMeshProUGUI>().text = "Play!";
                 }
 
-                if (!selectCard())
-                {
-                    Debug.Log("cannot select card.");
-                }
+                selectCard();
                 break;
             }
             case 1:
             {
-                if (playSelectedCards())
+                if (mSelectedCards.Count == 1)
                 {
-                    mPlayButton.SetActive(false);
+                    Game.Instance.OnConfirmMove(mSelectedCards);
+                }
 
-                    mPlayerState = -1;
-                    this.enabled = false;
+                if (mSelectedCards.Count == 1)
+                {
+                    while(mSelectedCards.Count > 0)
+                    {
+                        mSelectedCards[0].select(false);
+                        mSelectedCards.Remove(mSelectedCards[0]);
+                    }
                     Game.Instance.PlayNextTurn();
                 }
-                else
+                else if (mSelectedCards[0].cardRankIndex == mSelectedCards[1].cardRankIndex)
                 {
+                    playSelectedCards();
                     mPlayerState = 0;
                 }
                 break;
@@ -134,7 +154,7 @@ public class PlayerCardHolder : CardHolder
                     selectedCard.select(false);
                     mSelectedCards.Remove(selectedCard);
                 }
-                else if (mSelectedCards.Count < 5)
+                else if (mSelectedCards.Count < 2)
                 {
                     selectedCard.select(true);
                     mSelectedCards.Add(selectedCard);

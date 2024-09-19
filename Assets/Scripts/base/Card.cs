@@ -102,6 +102,20 @@ public class Card : MonoBehaviour
         }
     }
 
+    public bool clearCardFace()
+    {
+        if (ResourceManager.Instance.isSpriteAvailable("card_back"))
+        {
+            mSpriteRenderer.sprite = ResourceManager.Instance.getSprite("card_back");
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public void select(bool pSelect)
     {
         if (pSelect)
@@ -118,7 +132,7 @@ public class Card : MonoBehaviour
 
     public bool isSelected() { return mIsSelected; }
 
-    void Start()
+    void Awake()
     {
         mSpriteRenderer = GetComponent<SpriteRenderer>();
     }
